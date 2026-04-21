@@ -39,6 +39,10 @@ export function showLanding(): void {
   landing.classList.remove("hidden");
   homeBtn.classList.add("hidden");
   homeBtn.classList.remove("inline-flex");
+  newTabBtn.classList.add("hidden");
+  newTabBtn.classList.remove("inline-flex");
+  downloadBtn.classList.add("hidden");
+  downloadBtn.classList.remove("inline-flex");
 }
 
 export function showPdf(entry: PdfEntry): void {
@@ -46,6 +50,10 @@ export function showPdf(entry: PdfEntry): void {
   pdfView.classList.remove("hidden");
   homeBtn.classList.remove("hidden");
   homeBtn.classList.add("inline-flex");
+  newTabBtn.classList.remove("hidden");
+  newTabBtn.classList.add("inline-flex");
+  downloadBtn.classList.remove("hidden");
+  downloadBtn.classList.add("inline-flex");
 
   // Breadcrumb
   const crumbs = entry.breadcrumb;
@@ -83,6 +91,10 @@ export function showCategory(
   categoryView.classList.remove("hidden");
   homeBtn.classList.remove("hidden");
   homeBtn.classList.add("inline-flex");
+  newTabBtn.classList.add("hidden");
+  newTabBtn.classList.remove("inline-flex");
+  downloadBtn.classList.add("hidden");
+  downloadBtn.classList.remove("inline-flex");
 
   const catEntries = entries.filter((e) => e.category === category);
   const catTree = tree.find((t) => t.name === category);
@@ -137,11 +149,17 @@ function renderCatNodes(nodes: TreeNode[], category: string, depth = 0): string 
   if (files.length > 0) {
     html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 ${depth > 0 ? "ml-4" : ""} mb-4">`;
     for (const file of files) {
+      const url = `/${encodeURI(file.path!)}`;
       html += `
-        <a data-path="${escapeAttr(file.path!)}" class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2.5 cursor-pointer hover:border-indigo-300 hover:shadow-sm transition group">
-          <svg class="h-5 w-5 shrink-0 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12a2 2 0 002-2V6l-4-4H6a2 2 0 00-2 2v12a2 2 0 002 2zm5-12h2v4H9V6zm0 6h2v2H9v-2z"/></svg>
-          <span class="text-sm text-gray-700 group-hover:text-indigo-600 truncate">${escapeHtml(file.name)}</span>
-        </a>`;
+        <div class="group flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2.5 hover:border-indigo-300 hover:shadow-sm transition">
+          <a data-path="${escapeAttr(file.path!)}" class="flex-1 flex items-center gap-2 cursor-pointer truncate">
+            <svg class="h-5 w-5 shrink-0 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12a2 2 0 002-2V6l-4-4H6a2 2 0 00-2 2v12a2 2 0 002 2zm5-12h2v4H9V6zm0 6h2v2H9v-2z"/></svg>
+            <span class="text-sm text-gray-700 group-hover:text-indigo-600 truncate">${escapeHtml(file.name)}</span>
+          </a>
+          <a href="${url}" target="_blank" class="shrink-0 p-1 text-gray-400 hover:text-indigo-600 transition" title="Ouvrir dans un nouvel onglet">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+        </div>`;
     }
     html += `</div>`;
   }

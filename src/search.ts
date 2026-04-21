@@ -119,13 +119,20 @@ function search(query: string): void {
       const highlighted = matches
         ? highlightMatches(item.name, matches, "name")
         : highlightSubstring(item.name, q);
-      return `<button data-path="${escapeAttr(item.path)}" class="flex w-full items-start gap-2 px-4 py-2 text-left hover:bg-indigo-50 border-b border-gray-50 last:border-0">
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-medium text-gray-800">${highlighted}</div>
-          <div class="text-xs text-gray-400 truncate">${escapeHtml(item.breadcrumb.join(" › "))}</div>
-        </div>
-        ${tagHTML(item.category)}
-      </button>`;
+      const url = `/${encodeURI(item.path)}`;
+      return `
+        <div class="group flex items-center gap-2 px-4 py-2 hover:bg-indigo-50 border-b border-gray-50 last:border-0">
+          <button data-path="${escapeAttr(item.path)}" class="flex-1 min-w-0 text-left cursor-pointer">
+            <div class="text-sm font-medium text-gray-800">${highlighted}</div>
+            <div class="text-xs text-gray-400 truncate">${escapeHtml(item.breadcrumb.join(" › "))}</div>
+          </button>
+          <div class="flex items-center gap-2">
+            ${tagHTML(item.category)}
+            <a href="${url}" target="_blank" class="shrink-0 p-1 text-gray-400 hover:text-indigo-600 transition" title="Ouvrir dans un nouvel onglet">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            </a>
+          </div>
+        </div>`;
     })
     .join("");
   results.classList.remove("hidden");

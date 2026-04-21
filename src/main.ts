@@ -47,6 +47,22 @@ async function main(): Promise<void> {
     overlay.classList.add("hidden");
   });
 
+  // Disclaimer banner logic
+  const disclaimer = document.getElementById("disclaimer")!;
+  const closeDisclaimer = document.getElementById("close-disclaimer")!;
+  
+  if (localStorage.getItem("disclaimer-accepted") === "true") {
+    disclaimer.classList.add("hidden");
+  }
+
+  closeDisclaimer.addEventListener("click", () => {
+    disclaimer.classList.add("opacity-0", "-translate-y-full");
+    setTimeout(() => {
+      disclaimer.classList.add("hidden");
+    }, 300);
+    localStorage.setItem("disclaimer-accepted", "true");
+  });
+
   // Hash routing
   window.addEventListener("hashchange", handleHash);
   handleHash();

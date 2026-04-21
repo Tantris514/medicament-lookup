@@ -56,10 +56,16 @@ function renderNodes(nodes: TreeNode[], isRoot = false): string {
           </div>
         </details>`;
       } else {
-        return `<a data-path="${escapeAttr(node.path!)}" class="tree-item flex items-center gap-1.5 rounded px-2 py-1 cursor-pointer hover:bg-gray-100 truncate" title="${escapeAttr(node.name)}">
-          <svg class="h-3.5 w-3.5 shrink-0 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12a2 2 0 002-2V6l-4-4H6a2 2 0 00-2 2v12a2 2 0 002 2zm5-12h2v4H9V6zm0 6h2v2H9v-2z"/></svg>
-          <span class="truncate">${escapeHtml(node.name)}</span>
-        </a>`;
+        const url = `/${encodeURI(node.path!)}`;
+        return `<div class="group flex items-center gap-0.5 rounded pr-1 hover:bg-gray-100">
+          <a data-path="${escapeAttr(node.path!)}" class="tree-item flex-1 flex items-center gap-1.5 px-2 py-1 cursor-pointer truncate" title="${escapeAttr(node.name)}">
+            <svg class="h-3.5 w-3.5 shrink-0 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path d="M4 18h12a2 2 0 002-2V6l-4-4H6a2 2 0 00-2 2v12a2 2 0 002 2zm5-12h2v4H9V6zm0 6h2v2H9v-2z"/></svg>
+            <span class="truncate">${escapeHtml(node.name)}</span>
+          </a>
+          <a href="${url}" target="_blank" class="shrink-0 p-1 text-gray-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity" title="Ouvrir dans un nouvel onglet">
+            <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+        </div>`;
       }
     })
     .join("");
