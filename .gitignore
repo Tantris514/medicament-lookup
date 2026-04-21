@@ -1,0 +1,5 @@
+node_modules
+dist
+public/ONCO
+public/index.json
+*.zip

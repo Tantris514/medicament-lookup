@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InfoMedOC — Protocoles oncologiques</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💊</text></svg>" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="h-full bg-gray-50 text-gray-900 antialiased">
+    <div id="app" class="flex h-full flex-col">
+      <!-- Header -->
+      <header class="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200 bg-white px-4 py-2 shadow-sm">
+        <button id="sidebar-toggle" class="lg:hidden rounded p-1.5 hover:bg-gray-100" aria-label="Menu">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <a href="#" class="flex items-center gap-2 shrink-0">
+          <span class="text-lg font-bold text-indigo-600">InfoMedOC</span>
+        </a>
+        <div class="relative flex-1 max-w-xl mx-auto">
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Rechercher un protocole… (Ctrl+K)"
+            class="w-full rounded-lg border border-gray-300 bg-gray-50 py-2 pl-10 pr-4 text-sm placeholder-gray-400 focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-200"
+          />
+          <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <div id="search-results" class="absolute top-full left-0 right-0 z-50 mt-1 hidden max-h-96 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg"></div>
+        </div>
+        <a href="#" id="home-btn" class="hidden items-center gap-1 rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200 transition shrink-0">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>
+          Accueil
+        </a>
+        <span class="hidden sm:block text-xs text-gray-400 shrink-0" id="pdf-count"></span>
+      </header>
+
+      <!-- Main content -->
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar overlay (mobile) -->
+        <div id="sidebar-overlay" class="fixed inset-0 z-20 bg-black/30 hidden lg:hidden"></div>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-20 flex w-72 -translate-x-full lg:translate-x-0 flex-col border-r border-gray-200 bg-white transition-transform duration-200">
+          <div class="flex items-center gap-2 border-b border-gray-100 px-3 py-2">
+            <input
+              id="tree-filter"
+              type="search"
+              placeholder="Filtrer…"
+              class="flex-1 rounded border border-gray-200 bg-gray-50 px-2 py-1 text-xs placeholder-gray-400 focus:border-indigo-300 focus:outline-none"
+            />
+            <button id="expand-all" class="rounded p-1 text-xs text-gray-500 hover:bg-gray-100" title="Tout déplier">▶</button>
+            <button id="collapse-all" class="rounded p-1 text-xs text-gray-500 hover:bg-gray-100" title="Tout replier">▼</button>
+          </div>
+          <nav id="tree" class="flex-1 overflow-y-auto px-2 py-2 text-sm"></nav>
+        </aside>
+
+        <!-- Viewer -->
+        <main id="viewer" class="flex-1 flex flex-col overflow-hidden">
+          <!-- Landing page -->
+          <div id="landing" class="flex-1 overflow-y-auto p-6">
+            <div class="mx-auto max-w-4xl">
+              <h1 class="text-2xl font-bold text-gray-800 mb-2">Protocoles oncologiques</h1>
+              <p class="text-gray-500 mb-6">Sélectionnez un protocole dans l'arborescence ou recherchez par nom de médicament.</p>
+              <div id="category-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+          </div>
+          <!-- Category detail view -->
+          <div id="category-view" class="hidden flex-1 overflow-y-auto p-6">
+            <div class="mx-auto max-w-4xl">
+              <button id="cat-back" class="mb-4 inline-flex items-center gap-1 rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200 transition">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                Accueil
+              </button>
+              <div id="cat-header" class="mb-6"></div>
+              <div id="cat-content"></div>
+            </div>
+          </div>
+          <!-- PDF view (hidden by default) -->
+          <div id="pdf-view" class="hidden flex-1 flex flex-col overflow-hidden">
+            <div class="flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-2">
+              <nav id="breadcrumb" class="flex-1 text-sm text-gray-500 overflow-x-auto whitespace-nowrap"></nav>
+              <a id="download-btn" href="#" download class="inline-flex items-center gap-1 rounded bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700">
+                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                Télécharger
+              </a>
+            </div>
+            <div class="px-4 py-1 text-xs text-gray-400 font-mono bg-gray-50 border-b border-gray-100" id="pdf-path"></div>
+            <iframe id="pdf-frame" class="flex-1 w-full border-0"></iframe>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Tree styles */
+#tree details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+#tree details > summary::-webkit-details-marker {
+  display: none;
+}
+#tree details > summary::before {
+  content: "▸";
+  display: inline-block;
+  width: 1em;
+  transition: transform 0.15s;
+}
+#tree details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+/* Active tree item */
+.tree-item-active {
+  background-color: var(--color-indigo-50);
+  color: var(--color-indigo-700);
+  font-weight: 600;
+}
+
+/* Search highlight */
+mark {
+  background-color: var(--color-yellow-200);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* Exact match in tree filter */
+.tree-exact-match {
+  background-color: var(--color-yellow-50);
+  font-weight: 600;
+}
+
+/* Sidebar transition */
+#sidebar.open {
+  transform: translateX(0);
+}
