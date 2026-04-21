@@ -8,6 +8,7 @@ let breadcrumb: HTMLElement;
 let pdfPath: HTMLElement;
 let pdfFrame: HTMLIFrameElement;
 let downloadBtn: HTMLAnchorElement;
+let newTabBtn: HTMLAnchorElement;
 let homeBtn: HTMLElement;
 
 export function initViewer(): void {
@@ -18,6 +19,7 @@ export function initViewer(): void {
   pdfPath = document.getElementById("pdf-path")!;
   pdfFrame = document.getElementById("pdf-frame") as HTMLIFrameElement;
   downloadBtn = document.getElementById("download-btn") as HTMLAnchorElement;
+  newTabBtn = document.getElementById("newtab-btn") as HTMLAnchorElement;
   homeBtn = document.getElementById("home-btn")!;
 
   // Category back button
@@ -66,6 +68,7 @@ export function showPdf(entry: PdfEntry): void {
 
   downloadBtn.href = url;
   downloadBtn.download = entry.path.split("/").pop() ?? "document.pdf";
+  newTabBtn.href = url;
 
   closeSidebar();
 }
